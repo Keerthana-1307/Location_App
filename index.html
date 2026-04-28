@@ -1,0 +1,82 @@
+<!-- commands for creating the project
+npm install -g cordova
+ cordova create LocApp com.example.loc LocApp cd LocApp 
+ cordova platform add browser 
+Paste the below code in index.html Then give the following command
+cordova run browser -->
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location with Address</title>
+    <style>
+     body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 40px;
+    
+}
+
+h2 {
+    color: black;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 10px;
+    font-size: 14px;
+}
+
+p {
+    margin-top: 10px;
+}
+    </style>
+</head>
+
+<body>
+
+<h2>Current Location</h2>
+
+<button onclick="getLocation()">Show Location</button>
+
+<p id="result">Click the button</p>
+<p id="address"></p>
+
+<script>
+function getLocation() {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+}
+
+function showPosition(position) {
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+
+    document.getElementById("result").innerHTML =
+        "Latitude: " + lat + "<br>Longitude: " + lon;
+
+    getAddress(lat, lon);
+}
+
+function getAddress(lat, lon) {
+    fetch("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lon)
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("address").innerHTML =
+            "Address: " + data.display_name;
+    })
+    .catch(() => {
+        document.getElementById("address").innerHTML = "Address not found";
+    });
+}
+
+function showError(error) {
+    document.getElementById("result").innerHTML =
+        "Error: " + error.message;
+}
+</script>
+
+</body>
+</html>
